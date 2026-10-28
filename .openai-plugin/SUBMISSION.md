@@ -8,7 +8,7 @@
 - Attention website, contact page, privacy policy, and terms URLs in the package returned HTTP 200 on 2026-10-28.
 - The package has five positive and three negative draft review cases, the counts required for an initial MCP review.
 - The domain challenge path returned HTTP 404 on 2026-10-28; this is expected until the portal issues its token and Attention hosts it.
-- The initial Codex compatibility manifest was converted to OpenAI's recommended portable `plugin.json` and `mcp.json` format. The ZIP passed JSON parsing, required file checks, field length checks, and skill validation. Use the portal's upload validation as the authoritative package check.
+- The OpenAI source overlay builds into the recommended portable `plugin.json` and `mcp.json` format. The generated manifests inherit shared metadata and the MCP connection rather than maintaining duplicate configurations. Use the portal's upload validation as the authoritative package check.
 
 ## Attention engineering and account owner actions
 
@@ -23,7 +23,11 @@
 
 ## Packaging
 
-From the repository root, run `python3 scripts/build_openai_plugin.py` to validate and create `dist/attention-openai-1.0.0.zip`. The ZIP contains the plugin manifest, MCP configuration, shared skill, icon, and license.
+From the repository root, run `python3 .openai-plugin/build.py` with Python 3.9 or later. This validates and creates `.openai-plugin/dist/attention-openai-<version>.zip`, inheriting the version from `.claude-plugin/plugin.json` (currently `1.1.0`). The ZIP contains the generated portable manifests, unchanged shared skills and license, and the OpenAI icon.
+
+Only fields that differ for OpenAI are stored in `manifest-overlay.json`. Package identity, author, version, repository, license, and keywords come from `.claude-plugin/plugin.json`; the MCP URL and connection settings come from `.mcp.json`. The builder translates the HTTP transport name to `streamable-http` for the portable MCP format. All shared skill files and supporting resources are copied into the package.
+
+The repository's `.openai-plugin/` directory is an authoring layout. It is not a recognized OpenAI plugin root; distribute the generated ZIP with `plugin.json`, `mcp.json`, and `skills/` at its root. To choose an output directory, pass `--output-dir <directory>` to the build command.
 
 ## Sources
 

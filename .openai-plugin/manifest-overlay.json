@@ -1,23 +1,6 @@
 {
-  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "attention",
-  "version": "1.0.0",
   "description": "Search and analyze sales conversations in your Attention workspace.",
-  "author": {
-    "name": "Attention",
-    "email": "support@attention.tech",
-    "url": "https://attention.com"
-  },
   "homepage": "https://docs.attention.com/mcp/overview",
-  "repository": "https://github.com/attentiontech/attention",
-  "license": "MIT",
-  "keywords": [
-    "sales",
-    "conversations",
-    "transcripts",
-    "coaching",
-    "crm"
-  ],
   "extensions": {
     "com.openai": {
       "interface": {
