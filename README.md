@@ -9,7 +9,7 @@ This plugin provides:
 - **MCP Server Connection** — Connects to Attention's remote MCP server at `https://api.attention.tech/mcp` with OAuth 2.0 authentication
 - **Skills** — Agent skills for searching conversations and getting AI-powered insights
 
-Claude and Grok use `.claude-plugin/plugin.json` with `.mcp.json`. The OpenAI build reuses their package metadata, version, MCP connection, and `skills/` directory. Only OpenAI-specific metadata, assets, documentation, and build tooling live in `.openai-plugin/`.
+The OpenAI package reuses `.claude-plugin/plugin.json`, `.mcp.json`, and `skills/`. OpenAI-specific metadata, the icon, and the packaging script live in `.openai-plugin/`.
 
 ## Installation
 
@@ -41,17 +41,13 @@ Grok Build reads the same plugin files as Claude Code (`.claude-plugin/plugin.js
 
 ### ChatGPT and Codex
 
-Build the portable package with Python 3.9 or later:
+Build the package with Python 3.9 or later:
 
 ```bash
 python3 .openai-plugin/build.py
 ```
 
-This creates `.openai-plugin/dist/attention-openai-<version>.zip`, using the version from `.claude-plugin/plugin.json`. The ZIP contains root-level `plugin.json` and `mcp.json`, the unchanged shared skills and license, and the OpenAI icon. The builder converts the shared MCP transport from `http` to the portable name `streamable-http`; its endpoint and other connection settings come from `.mcp.json`.
-
-`.openai-plugin/` is the source overlay, not an installable plugin root: [OpenAI's package format](https://developers.openai.com/plugins/build/plugins) requires the generated manifests at the package root. Build the ZIP instead of uploading this repository or the overlay folder directly.
-
-For public distribution, upload the generated ZIP in the [OpenAI plugin portal](https://platform.openai.com/apps-manage), connect and scan the remote MCP server, and complete the review. The [OpenAI submission checklist](.openai-plugin/SUBMISSION.md) records the remaining Attention account and server requirements. Building the ZIP alone does not publish or install the plugin.
+This creates `.openai-plugin/dist/attention-openai-<version>.zip` with the shared metadata, MCP connection, skills, and license. The script adds the OpenAI metadata and icon and translates the HTTP transport name to `streamable-http`. Use the generated ZIP for [OpenAI's supported package layout](https://developers.openai.com/plugins/build/plugins); `.openai-plugin/` is the source folder.
 
 ## Available MCP Tools
 
@@ -65,11 +61,10 @@ attention/
 │   └── plugin.json          # Plugin manifest (name, version, metadata)
 ├── .mcp.json                # MCP server configuration (remote HTTP)
 ├── .openai-plugin/
-│   ├── manifest-overlay.json # OpenAI presentation and review metadata
+│   ├── manifest-overlay.json # OpenAI presentation metadata
 │   ├── assets/
 │   │   └── attention-icon.png
-│   ├── build.py              # Generates the portable ZIP from shared sources
-│   └── SUBMISSION.md
+│   └── build.py              # Packages the shared sources for OpenAI
 ├── skills/
 │   └── conversations/
 │       └── SKILL.md         # Shared conversation skill
@@ -104,12 +99,6 @@ attention/
    ```bash
    claude plugin validate ./attention
    ```
-
-6. **Build the OpenAI package**:
-   ```bash
-   python3 .openai-plugin/build.py
-   ```
-   Inspect the generated ZIP for `plugin.json`, `mcp.json`, `skills/conversations/SKILL.md`, `assets/attention-icon.png`, and `LICENSE`. After connecting the package in ChatGPT or Codex, complete Attention OAuth and try `Search for conversations from last week`. Authenticated tool discovery and calls require an Attention account.
 
 ## Server Details
 
